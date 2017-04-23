@@ -65,8 +65,8 @@ object Simple {
     else {
       val newPool = drawNewPoolToReproduceFrom(population)(probabilityGenerator)
       val crossedPopulation = crossoverPopulation(probabilityGenerator)(newPool)
-
-
+      val newGeneration = crossedPopulation map (specimen => specimen mutate)
+      iter(newGeneration, probabilityGenerator, caseStop)
     }
 
   //return best population sorted by eval fn

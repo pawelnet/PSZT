@@ -2,7 +2,7 @@ package pszt
 
 
 abstract class Solver() {
-  def generatePopulation: Vector[Chromosome]
+  def generatePopulation: List[Chromosome]
 
   def probabilityGenerator: Any=>Double
 
