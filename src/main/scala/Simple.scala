@@ -7,6 +7,8 @@ object Simple {
   type Population = List[Chromosome]
   type Distrubution = Double
   type PopulationDistributed = List[(Chromosome, Distrubution)]
+  type Speciman = Chromosome
+
 
   private def evaluteWholePopulation(population: Population): List[(Chromosome, Rating)] =
     population map (chromosome => (chromosome, chromosome.eval)) sortWith (_._2 > _._2)
@@ -21,6 +23,19 @@ object Simple {
         preparePopulationWithDistributon(Nil, newSum, result :+ (population.head._1, newSum))
     }
 
+  private def crossoverPopulation(probabilityGenerator: (Any) => Double)(newGeneration: Population) = {
+    val markedSpeciemanToReproduce = geussPairsToReproduceFrom(newGeneration)(probabilityGenerator)
+    val notDesignetToReproduce = markedSpeciemanToReproduce filter (!_._2) map (_._1)
+    val crossedOffspring = (markedSpeciemanToReproduce filter (_._2) map (_._1) grouped (2) map {
+      case parentA :: parentB :: Nil => parentA crossover parentB
+    }).foldLeft(List[Speciman]()) { (result, offspring) =>
+      offspring match {
+        case (childA, childB) => childA :: childB :: result
+      }
+    }
+    crossedOffspring ::: notDesignetToReproduce
+
+  }
 
   private def takeForPopulation(population: Population)(value: Double): Chromosome = {
 
@@ -41,22 +56,15 @@ object Simple {
   }
 
 
-  def geussPairsToReproduceFrom(newGeneration: Population)(probabilityGenerator: Any => Double): (Population, Population) = {
-    val populationWithMarkToReproduce = for (specimen <- newGeneration) yield (specimen, probabilityGenerator(specimen) == 1)
-    val specimensToCross = populationWithMarkToReproduce filter (_._2) map (_._1)
-    val specimensSplitted = specimensToCross splitAt (specimensToCross.length / 2)
-    specimensSplitted._1 zip specimensSplitted._2 map {
-      case (parentA: Chromosome, parentB: Chromosome) => parentA crossover parentB
-      case _ => _
-    }
-        populationWithMarkToReproduce filter(!_._2)
-  }
+  def geussPairsToReproduceFrom(newGeneration: Population)(probabilityGenerator: Any => Double): List[(Chromosome, Boolean)] =
+    for (specimen <- newGeneration) yield (specimen, probabilityGenerator(specimen) == 1)
+
 
   private def iter(population: List[Chromosome], probabilityGenerator: Any => Double, caseStop: Population => Boolean): Population =
     if (caseStop(population)) population
     else {
-      val newGeneration = drawNewPoolToReproduceFrom(population)(probabilityGenerator)
-      geussPairsToReproduceFrom(newGeneration)(probabilityGenerator)
+      val newPool = drawNewPoolToReproduceFrom(population)(probabilityGenerator)
+      val crossedPopulation = crossoverPopulation(probabilityGenerator)(newPool)
 
 
     }

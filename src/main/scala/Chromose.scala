@@ -5,7 +5,7 @@ abstract class Chromosome(genes: Vector[Genotype]) {
 
   def mutate(fn: Vector[Genotype] => Vector[Genotype]): Chromosome
 
-  def crossover(chromosome: Chromosome): Chromosome
+  def crossover(chromosome: Chromosome): (Chromosome,Chromosome)
 
   def eval: Double
 }
