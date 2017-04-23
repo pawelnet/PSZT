@@ -1,0 +1,3 @@
+package pszt
+
+trait Genotype
