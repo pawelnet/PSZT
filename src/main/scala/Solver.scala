@@ -2,10 +2,10 @@ package pszt
 
 
 abstract class Solver() {
-  def generatePopulation: Vector[Chromosome]
+  def generatePopulation: List[Chromosome]
 
-  def probabilityGenerator: Any=>Double
+  def probabilityGenerator: Any => Double
 
-  def stopCase(population: Vector[Chromosome]): Boolean
+  def stopCase: List[Chromosome] => Boolean
 }
 
