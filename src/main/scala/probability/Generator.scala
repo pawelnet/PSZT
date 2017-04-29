@@ -1,0 +1,5 @@
+package probability
+
+trait Generator {
+
+}
