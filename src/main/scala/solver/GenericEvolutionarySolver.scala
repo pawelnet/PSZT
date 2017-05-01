@@ -2,7 +2,6 @@ package solver
 
 import logging.Logger
 import operator.Operators
-import solution.Solution
 import task.Task
 import util.Types._
 
@@ -12,11 +11,11 @@ abstract class GenericEvolutionarySolver(operators: Operators,
 
   protected abstract def crossover(population: List[Genotype]): List[Genotype]
   protected abstract def mutate(genotype: Genotype): Genotype
-  protected abstract def reproduce(population: List[Solution], iteration: Int): List[Solution]
-  protected abstract def success(parentPopulation: List[Solution], offspringPopulation: List[Solution]): List[Solution]
+  protected abstract def reproduce(population: Population, iteration: Int): Population
+  protected abstract def success(parentPopulation: Population, offspringPopulation: Population): Population
 
   override def solve[F](task: Task[F]): F = {
-    def it(population: List[Solution], itNumber: Int = 0): List[Solution] = {
+    def it(population: Population, itNumber: Int = 0): Population = {
       if (operators.stopcaseOp(population, itNumber)) population
       else {
         val parentPopulation = reproduce(population, itNumber)

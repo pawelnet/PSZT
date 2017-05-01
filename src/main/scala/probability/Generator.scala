@@ -1,5 +1,0 @@
-package probability
-
-trait Generator {
-
-}

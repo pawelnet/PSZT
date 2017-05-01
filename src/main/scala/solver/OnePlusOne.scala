@@ -2,8 +2,8 @@ package solver
 
 import logging.Logger
 import operator.Operators
-import solution.Solution
-import util.Types.Genotype
+import util.ChromosomeType
+import util.Types.{Genotype, Population}
 
 class OnePlusOne(operators: Operators,
                  mutationDecreaseRatio: Double,
@@ -15,12 +15,12 @@ class OnePlusOne(operators: Operators,
   private var mutationEvaluationCounter = 0
   private var successRate = 0D
 
-  override protected def reproduce(population: List[Solution], iteration: Int): List[Solution] = {
+  override protected def reproduce(population: Population, iteration: Int): Population = {
     successRate = successfulIterations/iteration
     population
   }
 
-  override protected def success(parentPopulation: List[Solution], offspringPopulation: List[Solution]): List[Solution] = {
+  override protected def success(parentPopulation: Population, offspringPopulation: Population): Population = {
     mutationEvaluationCounter += 1
 
     if (parentPopulation.head.fitness > offspringPopulation.head.fitness) {
@@ -33,7 +33,10 @@ class OnePlusOne(operators: Operators,
     operators.mutateOp {
       if (mutationEvaluationCounter == mutationEvaluationInterval) {
         val scale = if (successRate > 0.2) mutationDecreaseRatio else if (successRate < 0.2) mutationIncreaseRatio else 1
-        List(genotype.head, genotype(1) map(_ * scale))
+        genotype map {
+          case (ChromosomeType.STANDARD_DEVIATION.toString, chromosome) => (ChromosomeType.STANDARD_DEVIATION.toString, chromosome map(_ * scale))
+          case other => other
+        }
       } else genotype
     }
   }

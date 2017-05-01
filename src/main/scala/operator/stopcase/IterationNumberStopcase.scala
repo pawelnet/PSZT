@@ -1,7 +1,7 @@
 package operator.stopcase
 
-import solution.Solution
+import util.Types.Population
 
 class IterationNumberStopcase(limit: Int) extends Stopcase {
-  override def apply(population: List[Solution], iteration: Int): Boolean = iteration >= limit
+  override def apply(population: Population, iteration: Int): Boolean = iteration >= limit
 }

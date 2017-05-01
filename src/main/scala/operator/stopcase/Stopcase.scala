@@ -1,7 +1,7 @@
 package operator.stopcase
 
-import solution.Solution
+import util.Types.Population
 
 trait Stopcase {
-  def apply(population: List[Solution], iteration: Int): Boolean
+  def apply(population: Population, iteration: Int): Boolean
 }
