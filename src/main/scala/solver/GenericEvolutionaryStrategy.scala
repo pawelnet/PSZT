@@ -12,7 +12,7 @@ abstract class GenericEvolutionaryStrategy(operators: Operators,
   override protected def crossover(population: List[Genotype]): List[Genotype] = {
     def crossoverIt(x: Genotype, rest: List[Genotype], result: List[Genotype] = List()): List[Genotype] = {
       if (rest.isEmpty) if(result.isEmpty) List(x) else result
-      else crossoverIt(rest.head, rest.tail, operators.crossoverOp(x, rest.head) :: result)
+      else crossoverIt(rest.head, rest.tail, operators.crossoverOp(x, rest.head) ::: result)
     }
 
     crossoverIt(population.head, population.tail)
