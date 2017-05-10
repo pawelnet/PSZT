@@ -2,7 +2,7 @@ package solver
 
 import logging.Logger
 import operator.Operators
-import util.ChromosomeType
+import util.ChromosomeTypes
 import util.Types.{Genotype, Population}
 
 class OnePlusOne(operators: Operators,
@@ -34,7 +34,7 @@ class OnePlusOne(operators: Operators,
       if (mutationEvaluationCounter == mutationEvaluationInterval) {
         val scale = if (successRate > 0.2) mutationDecreaseRatio else if (successRate < 0.2) mutationIncreaseRatio else 1
         genotype map {
-          case (ChromosomeType.STANDARD_DEVIATION.toString, chromosome) => (ChromosomeType.STANDARD_DEVIATION.toString, chromosome map(_ * scale))
+          case (ChromosomeTypes.StandardDeviation, chromosome) => (ChromosomeTypes.StandardDeviation, chromosome map(_ * scale))
           case other => other
         }
       } else genotype

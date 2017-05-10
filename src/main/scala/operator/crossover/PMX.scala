@@ -1,7 +1,7 @@
 package operator.crossover
 
-import util.{ListUtils, ChromosomeType}
 import util.Types.Genotype
+import util.{ChromosomeTypes, ListUtils}
 
 import scala.util.Random
 
@@ -10,7 +10,7 @@ class PMX extends Crossover {
     def swapIt(values: List[Double], swap: (Double, Double), swaps: List[(Double, Double)]): List[Double] =
       if (swaps.isEmpty) values else swapIt(ListUtils.swap(values, swap._1, swap._2), swaps.head, swaps.tail)
 
-    val VALUES = ChromosomeType.VALUES.toString
+    val VALUES = ChromosomeTypes.Values
 
     val xValues = x(VALUES)
     val yValues = y(VALUES)

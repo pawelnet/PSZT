@@ -1,22 +1,15 @@
 package util
 
 import solution.Solution
-/**
-object ChromosomeType extends Enumeration {
-  val VALUES, STANDARD_DEVIATION = Value
 
-  import scala.language.implicitConversions
-
-  implicit def asString(value: Value): String = value.toString
-}**/
-
-object ChromosomeType {
-  val VALUES = "VALUES"
-  val STANDARD_DEVIATION = "STANDARD_DEVIATION"
+trait ChromosomeType
+object ChromosomeTypes {
+  case object Values extends ChromosomeType
+  case object StandardDeviation extends ChromosomeType
 }
 
 object Types {
   type Chromosome = List[Double]
-  type Genotype = Map[String, Chromosome]
+  type Genotype = Map[ChromosomeType, Chromosome]
   type Population = List[Solution]
 }
