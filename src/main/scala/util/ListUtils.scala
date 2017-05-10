@@ -4,7 +4,8 @@ import scala.collection.mutable.ArrayBuffer
 
 object ListUtils {
   def swap[T](elements: List[T], i: Int, j:Int): List[T] = {
-    if (i == j || j < 0 || i < 0) elements
+    val len = elements.length
+    if (i == j || j < 0 || i < 0 || i >= len || j >= len) elements
     else {
       val mutableElements = new ArrayBuffer[T] ++= elements
 

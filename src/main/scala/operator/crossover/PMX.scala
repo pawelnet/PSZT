@@ -25,7 +25,7 @@ class PMX extends Crossover {
     val pairs = xSub zip ySub
 
     List(x, y) map(genotype => genotype map {
-      case (VALUES, _) => (VALUES, swapIt(genotype(VALUES), pairs.head, pairs.tail))
+      case (VALUES, _) => (VALUES, if (pairs.isEmpty) genotype(VALUES) else swapIt(genotype(VALUES), pairs.head, pairs.tail))
       case other => other
     })
   }

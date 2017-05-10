@@ -8,7 +8,7 @@ import scala.util.Random
 
 class TravellingSalesmanTask(nodes: List[List[Int]]) extends Task[List[Int]] {
   override def initPopulation(size: Int): Population = {
-    val initialValues = 1 to nodes.length map(_.toDouble)
+    val initialValues = nodes.indices map(_.toDouble)
 
     val population = for(i <- 1 to size) yield solution(Map(
       ChromosomeTypes.Values -> Random.shuffle(initialValues).toList,
