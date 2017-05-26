@@ -6,8 +6,8 @@ import webServer.model.ResponseStatus.Status
 
 object ResponseStatus extends Enumeration {
   type Status = Value
-  val OK, REJECTED = Value
+   val OK, REJECTED = Value
 }
 
 
-@JsonCodec case class NewTaskResponse(status: Status)
+@JsonCodec case class NewTaskResponse(status: String)

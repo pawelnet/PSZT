@@ -18,6 +18,8 @@ libraryDependencies ++= Seq(
   "org.http4s"     %% "http4s-circe"        % Http4sVersion
 )
 
+libraryDependencies += "junit" % "junit" % "4.10" % "test"
+
 val circeVersion = "0.8.0"
 
 libraryDependencies ++= Seq(

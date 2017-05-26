@@ -5,8 +5,6 @@ import operator.crossover.PMX
 import operator.mutate.AdaptiveGaussianShuffle
 import operator.select.ProportionalSelect
 import operator.stopcase.IterationNumberStopcase
-import pszt.eventBus.EventBus
-import pszt.eventBus.EventBus.{Task, consoleMessages, message, taskSubject}
 import solver.MuPlusLambda
 import task.TravellingSalesmanTask
 import webServer.model.SalesManProblemTaskRequest
