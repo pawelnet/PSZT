@@ -16,7 +16,7 @@ abstract class GenericEvolutionarySolver(operators: Operators,
 
   override def solve[F](task: Task[F]): F = {
     def it(population: Population, itNumber: Int = 0): Population = {
-      if (logger.isDefined) logger.get.log()
+      if (logger.isDefined) logger.get.log("dziala");
 
       if (operators.stopcaseOp(population, itNumber)) population
       else {
