@@ -14,9 +14,11 @@ abstract class GenericEvolutionarySolver(operators: Operators,
   protected def reproduce(population: Population, iteration: Int): Population
   protected def success(parentPopulation: Population, offspringPopulation: Population): Population
 
-  override def solve[F](task: Task[F]): F = {
+  override def solve[T](task: Task[T]): T = {
+    def best(population: Population) = population maxBy(_.fitness)
+
     def it(population: Population, itNumber: Int = 0): Population = {
-      if (logger.isDefined) logger.get.log("dziala");
+      if (logger.isDefined) logger.get.newPopulation(population, itNumber, task decode best(population))
 
       if (operators.stopcaseOp(population, itNumber)) population
       else {
@@ -27,6 +29,10 @@ abstract class GenericEvolutionarySolver(operators: Operators,
       }
     }
 
-    task decode it(task.initPopulation(populationSize)).maxBy(_.fitness)
+    val resultGenotype = best(it(task.initPopulation(populationSize)))
+    val resultFenotype = task decode resultGenotype
+
+    if (logger.isDefined) logger.get.endOfTask(resultGenotype, resultFenotype)
+    resultFenotype
   }
 }

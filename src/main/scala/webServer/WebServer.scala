@@ -8,7 +8,6 @@ import org.http4s.circe._
 import org.http4s.dsl._
 import org.http4s.server.websocket._
 import org.http4s.websocket.WebsocketBits._
-import pszt.Genotype
 import pszt.eventBus.EventBus.Iteration
 import pszt.eventBus.{EventBus, TaskBus}
 import pszt.eventBus.TaskBus.TaskType

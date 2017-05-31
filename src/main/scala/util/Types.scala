@@ -9,7 +9,8 @@ object ChromosomeTypes {
 }
 
 object Types {
-  type Chromosome = List[Double]
+  type Gene = Double
+  type Chromosome = List[Gene]
   type Genotype = Map[ChromosomeType, Chromosome]
   type Population = List[Solution]
 }

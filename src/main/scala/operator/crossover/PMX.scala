@@ -1,13 +1,13 @@
 package operator.crossover
 
-import util.Types.Genotype
+import util.Types.{Gene, Chromosome, Genotype}
 import util.{ChromosomeTypes, ListUtils}
 
 import scala.util.Random
 
 class PMX extends Crossover {
   override def apply(x: Genotype, y: Genotype): List[Genotype] = {
-    def swapIt(values: List[Double], swap: (Double, Double), swaps: List[(Double, Double)]): List[Double] =
+    def swapIt(values: Chromosome, swap: (Gene, Gene), swaps: List[(Gene, Gene)]): Chromosome =
       if (swaps.isEmpty) values else swapIt(ListUtils.swap(values, swap._1, swap._2), swaps.head, swaps.tail)
 
     val VALUES = ChromosomeTypes.Values

@@ -13,7 +13,7 @@ class AdaptiveGaussianShuffle extends Mutate {
     val gaussianSd = Random.nextGaussian
     val sdVector = genotype(ChromosomeTypes.StandardDeviation) map(_ * Math.exp(gaussianSd * alpha + Random.nextGaussian * beta))
 
-    def it(result: List[Double], index: Int = 0): List[Double] = {
+    def it(result: Chromosome, index: Int = 0): Chromosome = {
       if (index >= result.length) result
       else it(ListUtils.swap(result, index, (index + Random.nextGaussian * sdVector(index)).round.toInt), index + 1)
     }

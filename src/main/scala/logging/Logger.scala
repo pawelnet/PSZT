@@ -1,12 +1,13 @@
 package logging
 
-import util.Types.Genotype
+import solution.Solution
+import util.Types.Population
 
 trait Logger {
   def log(message: String)
 
-  def newPopulation(population: List[Genotype], iteration: Integer, rating: Double)
+  def newPopulation[T](population: Population, iteration: Int, bestFenotype: T)
 
-  def endOfTask(bestPopulation: List[Genotype], iteration: Integer, rating: Double)
+  def endOfTask[T](solutionGenotype: Solution, solutionFenotype: T)
 
 }
