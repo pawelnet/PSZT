@@ -6,9 +6,9 @@ import util.Types.{Gene, Chromosome, Genotype, Population}
 
 import scala.util.Random
 
-class TravellingSalesmanTask(nodes: List[List[Int]]) extends Task[List[Int]] {
+class TravellingSalesmanTask(nodes: List[List[Int]], start: Int, end: Int) extends Task[List[Int]] {
   override def initPopulation(size: Int): Population = {
-    val initialValues = nodes.indices map(_.toDouble)
+    val initialValues = nodes.indices filter(i => i != start && i != end) map(_.toDouble)
 
     val population = for(i <- 1 to size) yield solution(Map(
       ChromosomeTypes.Values -> Random.shuffle(initialValues).toList,
@@ -26,8 +26,8 @@ class TravellingSalesmanTask(nodes: List[List[Int]]) extends Task[List[Int]] {
 
     val valueVector = genotype(ChromosomeTypes.Values)
 
-    Solution(genotype, 1/fitnessIt(valueVector.head, valueVector))
+    Solution(genotype, 1/(fitnessIt(valueVector.head, valueVector) + nodes(start)(valueVector.head.toInt) + nodes(valueVector.last.toInt)(end)))
   }
 
-  override def decode(solution: Solution): List[Int] = solution genotype ChromosomeTypes.Values map(_.toInt)
+  override def decode(solution: Solution): List[Int] = start :: (solution genotype ChromosomeTypes.Values map(_.toInt)) ::: List(end)
 }

@@ -31,7 +31,7 @@ class TravellingSalesmanTaskSpec extends FlatSpec {
     List(167,343,165,473,233,0,243,155),
     List(129,256,165,320,321,243,0,140),
     List(168,353,301,447,334,155,140,0)
-  )))
+  ), 0, 7))
 
   print(result)
 }
