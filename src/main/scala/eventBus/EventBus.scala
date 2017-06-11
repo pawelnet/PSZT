@@ -2,31 +2,37 @@ package pszt.eventBus
 
 import pszt.eventBus.TaskBus.TaskType.TaskType
 import rx.lang.scala.Subject
-import util.Types.Genotype
+import solution.Solution
+import util.Types.{Genotype, Population}
 
 
 object EventBus {
-
+  self =>
   type Args = Any
   type Task = (TaskType, Args)
-  type Iteration = (List[Genotype], Integer, Double)
+  type Iteration = (Population, Int, Any)
 
   private val consoleMessages = Subject[String]()
   private val iterationSubject = Subject[Iteration]()
+  private val solutionSubject = Subject[(Solution, Any)]()
   private val taskSubject = Subject[Task]()
 
 
-  def getTaskObservable() = taskSubject asJavaObservable
+  def taskObservable = taskSubject asJavaObservable
 
-  def getTaskObserver() = taskSubject asJavaObserver
+  def taskObserver = taskSubject asJavaObserver
 
-  def getMessageObservable() = consoleMessages asJavaObservable
+  def messageObservable = consoleMessages asJavaObservable
 
-  def getIterationObservable() = iterationSubject asJavaObservable
+  def iterationObservable = iterationSubject asJavaObservable
 
-  def getIterationObserver() = iterationSubject asJavaObserver
+  def iterationObserver = iterationSubject asJavaObserver
 
-  def getMessageObserver() = consoleMessages asJavaObserver
+  def solutionObservable = solutionSubject asJavaObservable
+
+  def solutionObserver = solutionSubject asJavaObserver
+
+  def messageObserver = consoleMessages asJavaObserver
 
 
 }

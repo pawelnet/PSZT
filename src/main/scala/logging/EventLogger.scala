@@ -1,16 +1,18 @@
 package logging
 
 import pszt.eventBus.EventBus
-import util.Types.Genotype
+import pszt.eventBus.EventBus.Iteration
+import solution.Solution
+import util.Types.{Genotype, Population}
 
 class EventLogger extends Logger {
 
   override def log(message: String) =
-    EventBus.getMessageObserver().onNext(message)
+    EventBus.messageObserver onNext(message)
 
-  override def newPopulation(population: List[Genotype], iteration: Integer, rating: Double): Unit =
-    EventBus.getIterationObserver().onNext((population, iteration, rating))
+  override def newPopulation[T](population: Population, iteration: Int, bestFenotype: T): Unit =
+    EventBus.iterationObserver onNext((population, iteration, bestFenotype))
 
-  override def endOfTask(bestPopulation: List[Genotype], iteration: Integer, rating: Double): Unit =
-    EventBus.getIterationObserver().onNext((bestPopulation, iteration, rating))
+  override def endOfTask[T](solutionGenotype: Solution, solutionFenotype: T): Unit =
+    EventBus.solutionObserver onNext ((solutionGenotype, solutionFenotype))
 }

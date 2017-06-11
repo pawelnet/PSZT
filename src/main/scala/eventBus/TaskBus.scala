@@ -34,12 +34,12 @@ object TaskBus {
     lambda = 100
   )
 
-  EventBus.getTaskObservable().filter(_ => !inProgress).doOnNext {
+  EventBus.taskObservable.filter(_ => !inProgress).doOnNext {
     _ => inProgress = true
   }.subscribe(
     task =>
       task match {
-        case (TaskType.TravellingSalesmanTask, SalesManProblemTaskRequest(matrix)) => solver.solve(new TravellingSalesmanTask(matrix))
+        case (TaskType.TravellingSalesmanTask, SalesManProblemTaskRequest(matrix)) => solver.solve(new TravellingSalesmanTask(matrix,0, 1))
         case _ => throw new Error("Wrong task")
       })
 }

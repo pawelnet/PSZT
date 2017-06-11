@@ -1,6 +1,7 @@
 package pszt.api
 
-import fs2.{Pipe, Pure, Scheduler, Strategy, Stream, Task, async, pipe, text}
+import fs2.{Pipe, Scheduler, Strategy, Task, async, pipe, text}
+import io.circe.generic.auto._
 import io.circe.parser.decode
 import io.circe.syntax._
 import org.http4s._
@@ -9,19 +10,21 @@ import org.http4s.dsl._
 import org.http4s.server.websocket._
 import org.http4s.websocket.WebsocketBits._
 import pszt.eventBus.EventBus.Iteration
-import pszt.eventBus.{EventBus, TaskBus}
 import pszt.eventBus.TaskBus.TaskType
-import webServer.model.{NewTaskResponse, ResponseStatus, SalesManProblemTaskRequest}
+import pszt.eventBus.{EventBus, TaskBus}
+import solution.Solution
+import webServer.model.{IterationResponse, NewTaskResponse, SalesManProblemTaskRequest, SolutionResponse}
+
 object API {
 
   implicit val scheduler = Scheduler.fromFixedDaemonPool(2)
-  implicit val strategy = Strategy.fromFixedDaemonPool(8, threadName = "worker")
+  implicit val strategy = Strategy.fromFixedDaemonPool(4, threadName = "worker")
 
-  private var stream = Stream.empty
-    var  streams:  List[Stream[Pure,Iteration]] = List()
-  EventBus.getIterationObservable().subscribe(s => {
-    streams=  Stream.emit(s).pure :: streams
-  })
+  var list: List[Iteration] = List()
+  var listSolution: List[(Solution, Any)] = List()
+  EventBus.iterationObservable subscribe { o => list = o :: list }
+  EventBus.solutionObservable subscribe { o => listSolution = o :: listSolution }
+
 
   val service = HttpService {
 
@@ -33,14 +36,31 @@ object API {
         .unsafeRun()
       if (config.length > 0 && !TaskBus.isBusy()) {
         val data = decode[SalesManProblemTaskRequest](config.head).getOrElse(None).asInstanceOf[SalesManProblemTaskRequest]
-        EventBus.getTaskObserver().onNext((TaskType.TravellingSalesmanTask, data))
+        EventBus.taskObserver.onNext((TaskType.TravellingSalesmanTask, data))
         Ok((NewTaskResponse("OK").asJson))
       }
       else {
         Ok(NewTaskResponse("REJECTED").asJson)
       }
-    //    case req@GET -> Root / "salesManProblem" =>
-    //      Ok(queue.map(q => q.dequeue).unsafeRun())
+
+    case req@GET -> Root / "salesManProblem" =>
+      val nw = list.toArray
+      list = List()
+      Ok(nw.map {
+        case (population: List[Solution], iter:Int, best) => IterationResponse(population.map{
+          p=>(p.genotype.map(_._2).toList,p.fitness)
+        },iter.doubleValue(),best.toString)
+//        case (solution: Solution, winner) => SolutionResponse(solution, winner)
+      }.asJson)
+
+    case req@GET -> Root / "salesManProblem/result" =>
+      val nw = listSolution.toArray
+      listSolution = List()
+      Ok(nw.map {
+        case (solution: Solution, winner) => SolutionResponse(
+          (solution.genotype.map(_._2).toList,solution.fitness), winner.toString)
+      }.asJson)
+
 
     case GET -> Root / "hearbeat" => Ok(s"OK")
 

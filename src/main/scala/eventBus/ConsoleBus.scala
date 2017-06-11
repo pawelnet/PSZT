@@ -2,5 +2,5 @@ package pszt.eventBus
 
 
 object ConsoleBus {
-  EventBus.getMessageObservable() subscribe (println(_))
+  EventBus.messageObservable subscribe (println(_))
 }
