@@ -1,5 +1,7 @@
 package pszt.eventBus
 
+
+import logging.EventLogger
 import operator.Operators
 import operator.crossover.PMX
 import operator.mutate.AdaptiveGaussianShuffle
@@ -31,7 +33,8 @@ object TaskBus {
       new IterationNumberStopcase(100)
     ),
     mu = 50,
-    lambda = 100
+    lambda = 100,
+    Some(new EventLogger())
   )
 
   EventBus.taskObservable.filter(_ => !inProgress).doOnNext {
@@ -39,7 +42,7 @@ object TaskBus {
   }.subscribe(
     task =>
       task match {
-        case (TaskType.TravellingSalesmanTask, SalesManProblemTaskRequest(matrix)) => solver.solve(new TravellingSalesmanTask(matrix,0, 1))
+        case (TaskType.TravellingSalesmanTask, SalesManProblemTaskRequest(matrix)) => solver.solve(new TravellingSalesmanTask(matrix,0, 7))
         case _ => throw new Error("Wrong task")
       })
 }

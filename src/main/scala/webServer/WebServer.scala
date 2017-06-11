@@ -13,16 +13,16 @@ import pszt.eventBus.EventBus.Iteration
 import pszt.eventBus.TaskBus.TaskType
 import pszt.eventBus.{EventBus, TaskBus}
 import solution.Solution
-import webServer.model.{IterationResponse, NewTaskResponse, SalesManProblemTaskRequest, SolutionResponse}
+import webServer.model._
 
 object API {
 
-  implicit val scheduler = Scheduler.fromFixedDaemonPool(2)
-  implicit val strategy = Strategy.fromFixedDaemonPool(4, threadName = "worker")
+  implicit val scheduler = Scheduler.fromFixedDaemonPool(1)
+  implicit val strategy = Strategy.fromFixedDaemonPool(1, threadName = "worker")
 
-  var list: List[Iteration] = List()
+  var logCache: List[Iteration] = List()
   var listSolution: List[(Solution, Any)] = List()
-  EventBus.iterationObservable subscribe { o => list = o :: list }
+  EventBus.iterationObservable subscribe { o => logCache = o :: logCache }
   EventBus.solutionObservable subscribe { o => listSolution = o :: listSolution }
 
 
@@ -43,23 +43,25 @@ object API {
         Ok(NewTaskResponse("REJECTED").asJson)
       }
 
-    case req@GET -> Root / "salesManProblem" =>
-      val nw = list.toArray
-      list = List()
+    case req@GET -> Root / "salesManProblem" / offset =>
+      val off = Integer.parseInt(offset)
+      val nw = logCache.slice(off, off+1)
       Ok(nw.map {
-        case (population: List[Solution], iter:Int, best) => IterationResponse(population.map{
-          p=>(p.genotype.map(_._2).toList,p.fitness)
-        },iter.doubleValue(),best.toString)
-//        case (solution: Solution, winner) => SolutionResponse(solution, winner)
+        case (population: List[Solution], iter: Int, best) => IterationResponse(iter.doubleValue(), best.toString, population.map {
+          p => FenotypeSnap(p.genotype.map(_._2.toList).toList, p.fitness)
+        })
       }.asJson)
 
-    case req@GET -> Root / "salesManProblem/result" =>
-      val nw = listSolution.toArray
-      listSolution = List()
-      Ok(nw.map {
+    case req@GET -> Root / "result"/ "salesManProblem"=>
+      Ok(listSolution.map {
         case (solution: Solution, winner) => SolutionResponse(
-          (solution.genotype.map(_._2).toList,solution.fitness), winner.toString)
+          (solution.genotype.map(_._2).toList, solution.fitness), winner.toString)
       }.asJson)
+
+    case req@GET -> Root / "cache" / "clear" =>
+      logCache = List()
+      listSolution = List()
+      Ok("DONE")
 
 
     case GET -> Root / "hearbeat" => Ok(s"OK")
