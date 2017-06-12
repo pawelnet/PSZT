@@ -7,36 +7,24 @@ import operator.mutate.{GaussianShuffle, UnifShuffle, AdaptiveGaussianShuffle}
 import operator.select.ProportionalSelect
 import operator.stopcase.IterationNumberStopcase
 import org.scalatest.FlatSpec
-import solver.MuPlusLambda
+import solver.{MuLambda, MuPlusLambda}
 
 class TravellingSalesmanTaskSpec extends FlatSpec {
   val solver = new MuPlusLambda(
     operators = Operators(
       new PMX,
-      new GaussianShuffle,
+      new AdaptiveGaussianShuffle,
       new ProportionalSelect,
       new ProportionalSelect,
       new IterationNumberStopcase(50)
     ),
-    mu = 100,
+    mu = 50,
     lambda = 100,
     Some(new ConsoleLogger)
   )
 
-  /*
-  val result = solver.solve(new TravellingSalesmanTask(List(
-  //wawa olszt tor gdan bial lubl lodz kiel
-    List(0,192,201,309,192,167,129,168),
-    List(192,0,164,209,148,343,256,353),
-    List(201,164,0,162,333,365,165,301),
-    List(309,148,162,0,356,473,320,447),
-    List(192,209,333,356,0,223,321,334),
-    List(167,343,165,473,233,0,243,155),
-    List(129,256,165,320,321,243,0,140),
-    List(168,353,301,447,334,155,140,0)
-  ), 0, 7))
-  */
-
+  val params = List((10, 20), (50,100), (100,200))
+  
   val distances = List(
     List(0,295,171,455,198,347,310,180,417,442,642,302,559,285,214,400,111,136,295,217,261,258,516,338,297,98,514,530,390,446),
     List(295,0,320,109,571,272,478,117,585,609,715,469,754,599,536,568,364,267,463,142,307,425,683,192,168,425,682,697,557,614),
@@ -70,7 +58,35 @@ class TravellingSalesmanTaskSpec extends FlatSpec {
     List(446,614,605,711,481,579,246,498,92,101,250,144,147,149,255,116,299,371,215,474,704,200,85,569,661,338,106,53,94,0)
   )
 
-  val result2 = solver.solve(new TravellingSalesmanTask(distances, 0, 25))
+  val task = new TravellingSalesmanTask(distances, 0, 25)
 
-  print(result2)
+  params.foreach(ml => {
+    List(new UnifShuffle, new GaussianShuffle, new AdaptiveGaussianShuffle).foreach(op => new MuPlusLambda(
+      operators = Operators(
+        new PMX,
+        op,
+        new ProportionalSelect,
+        new ProportionalSelect,
+        new IterationNumberStopcase(50)
+      ),
+      mu = ml._1,
+      lambda = ml._2,
+      Some(new ConsoleLogger)
+    ).solve(task))
+  })
+
+  params.foreach(ml => {
+    List(new UnifShuffle, new GaussianShuffle, new AdaptiveGaussianShuffle).foreach(op => new MuLambda(
+      operators = Operators(
+        new PMX,
+        op,
+        new ProportionalSelect,
+        new ProportionalSelect,
+        new IterationNumberStopcase(50)
+      ),
+      mu = ml._1,
+      lambda = ml._2,
+      Some(new ConsoleLogger)
+    ).solve(task))
+  })
 }
