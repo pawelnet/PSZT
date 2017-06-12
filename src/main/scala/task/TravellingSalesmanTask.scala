@@ -26,7 +26,7 @@ class TravellingSalesmanTask(nodes: List[List[Int]], start: Int, end: Int) exten
 
     val valueVector = genotype(ChromosomeTypes.Values)
 
-    Solution(genotype, 1/(fitnessIt(valueVector.head, valueVector) + nodes(start)(valueVector.head.toInt) + nodes(valueVector.last.toInt)(end)))
+    Solution(genotype, 1000/(fitnessIt(valueVector.head, valueVector) + nodes(start)(valueVector.head.toInt) + nodes(valueVector.last.toInt)(end)))
   }
 
   override def decode(solution: Solution): List[Int] = start :: (solution genotype ChromosomeTypes.Values map(_.toInt)) ::: List(end)
