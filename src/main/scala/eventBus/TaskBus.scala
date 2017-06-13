@@ -42,7 +42,9 @@ object TaskBus {
   }.subscribe(
     task =>
       task match {
-        case (TaskType.TravellingSalesmanTask, SalesManProblemTaskRequest(matrix)) => solver.solve(new TravellingSalesmanTask(matrix,0, 7))
+        case (TaskType.TravellingSalesmanTask, SalesManProblemTaskRequest(matrix,destination,algorithm,origin)) => solver.solve(new TravellingSalesmanTask(matrix.map(
+          m=>m.map(_.toInt)
+          ),0, 7))
         case _ => throw new Error("Wrong task")
       })
 }

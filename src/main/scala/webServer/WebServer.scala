@@ -22,8 +22,8 @@ object API {
 
   var logCache: List[Iteration] = List()
   var listSolution: List[(Solution, Any)] = List()
-  EventBus.iterationObservable subscribe { o => logCache = o :: logCache }
-  EventBus.solutionObservable subscribe { o => listSolution = o :: listSolution }
+  EventBus.iterationObservable subscribe { o => logCache = logCache :+ o }
+  EventBus.solutionObservable subscribe { o => listSolution = listSolution :+ o }
 
 
   val service = HttpService {
@@ -35,6 +35,8 @@ object API {
         .runLog
         .unsafeRun()
       if (config.length > 0 && !TaskBus.isBusy()) {
+        logCache = List()
+        listSolution = List()
         val data = decode[SalesManProblemTaskRequest](config.head).getOrElse(None).asInstanceOf[SalesManProblemTaskRequest]
         EventBus.taskObserver.onNext((TaskType.TravellingSalesmanTask, data))
         Ok((NewTaskResponse("OK").asJson))
@@ -43,16 +45,27 @@ object API {
         Ok(NewTaskResponse("REJECTED").asJson)
       }
 
-    case req@GET -> Root / "salesManProblem" / offset =>
+    case req@GET -> Root / "salesManProblem" / "iteration" / offset =>
       val off = Integer.parseInt(offset)
-      val nw = logCache.slice(off, off+1)
+      val nw = logCache.slice(off, off + 1)
       Ok(nw.map {
         case (population: List[Solution], iter: Int, best) => IterationResponse(iter.doubleValue(), best.toString, population.map {
           p => FenotypeSnap(p.genotype.map(_._2.toList).toList, p.fitness)
         })
       }.asJson)
 
-    case req@GET -> Root / "result"/ "salesManProblem"=>
+    case req@GET -> Root / "salesManProblem" / "population" =>
+      Ok(PopulationStatisticsResponse(logCache.map {
+        case (population: List[Solution], iter: Int, best) => population.map {
+          p => p.fitness
+        }.max
+      }, if (listSolution.length > 0) listSolution.map {
+        case (solution: Solution, winner) => winner
+      }.head.asInstanceOf[List[Int]].map(_.toDouble) else List()
+
+      ).asJson)
+
+    case req@GET -> Root / "result" / "salesManProblem" =>
       Ok(listSolution.map {
         case (solution: Solution, winner) => SolutionResponse(
           (solution.genotype.map(_._2).toList, solution.fitness), winner.toString)
@@ -79,6 +92,8 @@ object API {
         WS(d, e)
       }
 
+    case _ =>
+      Ok("Wrong address")
 
   }
 }
