@@ -24,7 +24,10 @@ export function run (state = initialState, action) {
         isRunning: true
       }
     case LOCATION_CHANGE: {
-      return state
+      return {
+        ...state,
+        isRunning: false
+      }
     }
     default:
       return state

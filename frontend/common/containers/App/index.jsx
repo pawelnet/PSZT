@@ -64,7 +64,7 @@ class App extends Component {
     // let {location} = this.props
     // let path = location.pathname
     // checkAuthLogic(path, loggedIn)
-    return true
+    // return true
   }
 
   componentWillReceiveProps (nextProps) {

@@ -2,7 +2,7 @@ import React from 'react'
 import {Redirect, Switch} from 'react-router'
 import {createBrowserHistory} from 'history'
 import {App, IterationStats, ResultStats, Run} from 'containers'
-// import {RouteAuth} from 'components'
+import {RouteAuth} from 'components'
 
 export const history = getHistory()
 
@@ -13,7 +13,7 @@ export const appRouting = [
     exact: true,
     icon: 'rocket',
     sidebarVisible: true,
-    // tag: RouteAuth,
+    tag: RouteAuth,
     component: Run
   },
   {
@@ -22,7 +22,7 @@ export const appRouting = [
     exact: true,
     icon: 'comments outline',
     sidebarVisible: true,
-    // tag: RouteAuth,
+    tag: RouteAuth,
     component: ResultStats
   },
   {
@@ -31,7 +31,7 @@ export const appRouting = [
     exact: true,
     icon: 'bar chart',
     sidebarVisible: true,
-    // tag: RouteAuth,
+    tag: RouteAuth,
     component: IterationStats
   }
     // {
@@ -72,7 +72,7 @@ export const Routing = authCheck => {
 }
 
 function getHistory () {
-  const basename = process.env.BUILD_DEMO ? '/react-semantic.ui-starter' : ''
+  const basename = ''
 
   return createBrowserHistory({basename})
 }

@@ -17,15 +17,15 @@ export default class Root extends Component {
      * check RouteAuth component.
      */
   authCheck (path) {
-    let {store} = this.props
-    let {loggedIn} = store.getState().auth
-    let authPath = '/auth'
-    let allowedToVisitPath = [authPath]
-    if (loggedIn && path === authPath) {
-      return false
-    } else if (!loggedIn && !allowedToVisitPath.includes(path)) {
-      return false
-    }
+    // let {store} = this.props
+    // let {loggedIn} = store.getState().auth
+    // let authPath = '/auth'
+    // let allowedToVisitPath = [authPath]
+    // if (loggedIn && path === authPath) {
+    //   return false
+    // } else if (!loggedIn && !allowedToVisitPath.includes(path)) {
+    //   return false
+    // }
     return true
   }
 
