@@ -10,7 +10,7 @@ class TravellingSalesmanTask(nodes: List[List[Int]], start: Int, end: Int) exten
   override def initPopulation(size: Int): Population = {
     val initialValues = nodes.indices filter(i => i != start && i != end) map(_.toDouble)
 
-    val population = for(i <- 1 to size) yield solution(Map(
+    val population = for(i <- 1 to size) yield evaluate(Map(
       ChromosomeTypes.Values -> Random.shuffle(initialValues).toList,
       ChromosomeTypes.StandardDeviation -> initialValues.map((_) => Random.nextGaussian).toList
     ))
@@ -18,7 +18,7 @@ class TravellingSalesmanTask(nodes: List[List[Int]], start: Int, end: Int) exten
     population.toList
   }
 
-  override def solution(genotype: Genotype): Solution = {
+  override def evaluate(genotype: Genotype): Solution = {
     def fitnessIt(gene: Gene, chromosome: Chromosome, fitness: Double = 0): Double = {
       if (chromosome.isEmpty) fitness
       else fitnessIt(chromosome.head, chromosome.tail, fitness + nodes(gene.toInt)(chromosome.head.toInt))
@@ -29,5 +29,5 @@ class TravellingSalesmanTask(nodes: List[List[Int]], start: Int, end: Int) exten
     Solution(genotype, 1000/(fitnessIt(valueVector.head, valueVector) + nodes(start)(valueVector.head.toInt) + nodes(valueVector.last.toInt)(end)))
   }
 
-  override def decode(solution: Solution): List[Int] = start :: (solution genotype ChromosomeTypes.Values map(_.toInt)) ::: List(end)
+  override def solution(solution: Solution): List[Int] = start :: (solution genotype ChromosomeTypes.Values map(_.toInt)) ::: List(end)
 }

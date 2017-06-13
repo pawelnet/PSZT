@@ -10,9 +10,9 @@ class EventLogger extends Logger {
   override def log(message: String) =
     EventBus.messageObserver onNext(message)
 
-  override def newPopulation[T](population: Population, iteration: Int, bestFenotype: T): Unit =
-    EventBus.iterationObserver onNext((population, iteration, bestFenotype))
+  override def newPopulation[T](population: Population, iteration: Int, best: T): Unit =
+    EventBus.iterationObserver onNext((population, iteration, best))
 
-  override def endOfTask[T](solutionGenotype: Solution, solutionFenotype: T): Unit =
-    EventBus.solutionObserver onNext ((solutionGenotype, solutionFenotype))
+  override def endOfTask[T](solutionGenotype: Solution, solution: T): Unit =
+    EventBus.solutionObserver onNext ((solutionGenotype, solution))
 }

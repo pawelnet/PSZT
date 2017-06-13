@@ -18,21 +18,21 @@ abstract class GenericEvolutionarySolver(operators: Operators,
     def best(population: Population) = population maxBy(_.fitness)
 
     def it(population: Population, itNumber: Int = 0): Population = {
-      if (logger.isDefined) logger.get.newPopulation(population, itNumber, task decode best(population))
+      if (logger.isDefined) logger.get.newPopulation(population, itNumber, task solution best(population))
 
       if (operators.stopcaseOp(population, itNumber)) population
       else {
         val parentPopulation = reproduce(population, itNumber)
         val offspringChromosomes = crossover(parentPopulation map(_.genotype)) map mutate
 
-        it(success(parentPopulation, offspringChromosomes.map(task.solution)), itNumber + 1)
+        it(success(parentPopulation, offspringChromosomes.map(task.evaluate)), itNumber + 1)
       }
     }
 
     val resultGenotype = best(it(task.initPopulation(populationSize)))
-    val resultFenotype = task decode resultGenotype
+    val solution = task solution resultGenotype
 
-    if (logger.isDefined) logger.get.endOfTask(resultGenotype, resultFenotype)
-    resultFenotype
+    if (logger.isDefined) logger.get.endOfTask(resultGenotype, solution)
+    solution
   }
 }

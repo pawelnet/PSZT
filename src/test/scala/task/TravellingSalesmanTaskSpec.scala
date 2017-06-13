@@ -16,7 +16,7 @@ class TravellingSalesmanTaskSpec extends FlatSpec {
       new AdaptiveGaussianShuffle,
       new ProportionalSelect,
       new ProportionalSelect,
-      new IterationNumberStopcase(50)
+      new IterationNumberStopcase(200)
     ),
     mu = 50,
     lambda = 100,
@@ -24,7 +24,7 @@ class TravellingSalesmanTaskSpec extends FlatSpec {
   )
 
   val params = List((10, 20), (50,100), (100,200))
-  
+
   val distances = List(
     List(0,295,171,455,198,347,310,180,417,442,642,302,559,285,214,400,111,136,295,217,261,258,516,338,297,98,514,530,390,446),
     List(295,0,320,109,571,272,478,117,585,609,715,469,754,599,536,568,364,267,463,142,307,425,683,192,168,425,682,697,557,614),

@@ -46,7 +46,7 @@ class ApiTests extends FunSuite {
   test("POST /salesManProblem new task with data") {
     EventBus.taskObserver.onCompleted()
 
-    val json = SalesManProblemTaskRequest(List(List(1, 1), List(1, 1))).asJson.toString()
+    val json = SalesManProblemTaskRequest(List(List("1", "1"), List("1", "1")), 7, "mu+lambda", 0).asJson.toString()
 
 
     var bytes = json.toCharArray.map(_.toByte)

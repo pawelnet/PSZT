@@ -6,8 +6,8 @@ import util.Types.Population
 trait Logger {
   def log(message: String)
 
-  def newPopulation[T](population: Population, iteration: Int, bestFenotype: T)
+  def newPopulation[T](population: Population, iteration: Int, best: T)
 
-  def endOfTask[T](solutionGenotype: Solution, solutionFenotype: T)
+  def endOfTask[T](solutionGenotype: Solution, solution: T)
 
 }
